@@ -3551,7 +3551,7 @@
 
         function library:init_config(window) 
             window:seperator({name = "Settings"})
-            local main = window:tab({name = "Settings", tabs = {"Main"}})
+            local main = window:tab({name = "Configs", tabs = {"Main"}})
             
             local column = main:column({})
             local section = column:section({name = "Configs", size = 1, default = true, icon = "rbxassetid://139628202576511"})
@@ -3572,8 +3572,14 @@
                 end
             })
             section:colorpicker({name = "Menu Accent", callback = function(color, alpha) library:update_theme("accent", color) end, color = themes.preset.accent})
-            
-
+section:keybind({
+    name = "Menu Bind",
+    default = Enum.KeyCode.K,
+    callback = function()
+        window:toggle_menu()
+    end
+})
+        end
     --
 
     -- Notification Library
