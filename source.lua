@@ -3572,14 +3572,35 @@
                 end
             })
             section:colorpicker({name = "Menu Accent", callback = function(color, alpha) library:update_theme("accent", color) end, color = themes.preset.accent})
-section:keybind({
-    name = "Menu Bind",
-    default = Enum.KeyCode.K,
-    callback = function()
-        window:toggle_menu()
-    end
-})
-        end
+            section:keybind({name = "Menu Bind", key = Enum.KeyCode.Insert, callback = function(bool) window.toggle_menu(bool) end, seperator = true, default = true})
+
+            section:button({name = "Join Lowest Server", callback = function()
+                local Servers = string.format("https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100", tostring(game.PlaceId))
+        
+                local ListServers = function(cursor)
+                    local Raw = game:HttpGet(Servers .. ((cursor and "&cursor="..cursor) or ""))
+                    return Services.HttpService:JSONDecode(Raw)
+                end
+        
+                local Server, Next; repeat
+                    local Servers = ListServers(Next)
+                    Server = Servers.data[1]
+                    Next = Servers.nextPageCursor
+                until Server
+        
+                if Server.id == game.JobId then
+                    library.notifications:create_notification({
+                        name = "Gunda.lol",
+                        info = `You are currently in the smallest server!`,
+                        lifetime = 10
+                    })
+                    return  
+                end 
+                
+                Services.TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id)
+            end})
+
+
     --
 
     -- Notification Library
